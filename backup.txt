@@ -1,0 +1,18 @@
+Messages in different layers
+Source:
+out: { { encrypt(cental_pub, target[i]), other targets }  ++ encrypt(group_pub, message) ++ encrypt(l2proxy_pub, group_pub) ++ l2proxy}
+to: L1 proxy
+
+L1 proxy: (knows source)
+in: { encrypted_central_targets  ++ encrypted_group_message ++ encrypted_l2proxy_group_pub ++ l2proxy}
+out: { [encrypt(cental_pub, target[i]), ... other targets ]  ++ encrypt(group_pub, message) ++ encrypt(l2proxy_pub, group_pub) }
+to: l2proxy
+
+
+L2 proxy: decode the group public key, generate temp_key, compute encrypted_scrambled_encrypted_message
+encrypted_scrambled_encrypted_message: encrypt(group_pub, temp_key ++ encrypt(temp_key, encrypt(group_pub, message)))
+to: central
+out: { encrypt(cental_pub, target) ++  encrypted_scrambled_encrypted_message}, ... messages for other targets
+
+Central
+{ target ++ encrypted_scrambled_encrypted_message}
